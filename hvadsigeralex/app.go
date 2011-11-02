@@ -59,7 +59,7 @@ const mainPageHTML = `
   <meta charset="utf-8">
   <title>Hvad siger Alex?</title>
   <link rel="stylesheet" href="/css/main.css" type="text/css" />
-  <meta property="og:image" content="http://hvadsigeralex.dk/img/head_col.png"/> 
+  <meta property="og:image" content="http://www.hvadsigeralex.dk/img/head_col.png"/> 
 </head>
 <body class="{{html .bodyClass}}">
   <div id="bubbleImg">&nbsp;
