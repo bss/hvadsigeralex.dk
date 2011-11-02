@@ -1,0 +1,5 @@
+This is the code behind hvadsigeralex.dk.
+It is written in Google Go for Google AppEngine.
+
+In order to have a working version you would have to setup a long-living facebook access token to the facebook account you would like to fetch statuses from.
+Account name and access token is setup in hvadsigeralex/config/config.go
