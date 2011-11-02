@@ -1,0 +1,78 @@
+*, html, body {
+	margin: 0px;
+	padding: 0px;
+}
+* {
+	
+	font-family: Helvetica, arial;
+	font-weight: 100;
+	color: rgba(255, 255, 255, 255);
+}
+body {
+	background: rgba(120, 110, 110, 255);
+}
+body.col1 {
+	background: rgba(0, 121, 52, 255);
+}
+body.col2 {
+	background: rgba(35, 96, 131, 255);
+}
+body.col3 {
+	background: rgba(121, 0, 0, 255);
+}
+body.col4 {
+	background: rgba(121, 0, 111, 255);
+}
+body.col5 {
+	background: rgba(121, 0, 57, 255);
+}
+a:hover {
+	text-shadow: 0px 0px 5px rgba(0,0,0, 100);
+}
+
+div#bubbleImg {
+	display: block;
+
+	height: 500px;
+	width: 450px;
+	height: 600px;
+	
+	margin: 25px auto 0px auto;
+	
+	background: url('../img/bg.png') no-repeat;
+	
+	text-align: center;
+	font-size: 1.2em;
+}
+
+div#bubbleImg h1 {
+	display: block;
+	
+	width: 280px;
+	height: 135px;
+	
+	margin-top: 50px;
+	margin-left: 85px;
+
+}
+
+a#head {
+	display: block;
+	height: 250px;
+	width: 210px;
+	margin-top: 60px;
+	margin-left: 160px;
+	text-decoration: none;
+	background: url('../img/head.png') no-repeat;
+}
+a:hover#head {
+	background: url('../img/head.png') no-repeat -225px 0px;
+}
+
+div#footer {
+	margin-top: 50px;
+
+	padding-right: 20px;
+	
+	text-align: right;	
+}

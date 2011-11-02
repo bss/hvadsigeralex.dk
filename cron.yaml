@@ -1,0 +1,4 @@
+cron:
+- description: hourly priming of cache
+  url: /primeCache
+  schedule: every 1 hours synchronized

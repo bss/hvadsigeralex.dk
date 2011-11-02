@@ -1,0 +1,14 @@
+application: hvadsigeralex
+version: 1
+runtime: go
+api_version: 3
+
+handlers:
+- url: /img
+  static_dir: hvadsigeralex/img
+
+- url: /css
+  static_dir: hvadsigeralex/css
+
+- url: /.*
+  script: _go_app
