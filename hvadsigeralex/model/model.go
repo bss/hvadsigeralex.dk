@@ -77,7 +77,7 @@ func updateMemcache(c appengine.Context, statusList []Status) {
 }
 
 func fetchFacebookStatuses(c appengine.Context) ([]Status, os.Error) {
-  graph_url := "https://graph.facebook.com/banckp/statuses" + "?limit=1000&access_token=" +config.AccessToken
+  graph_url := "https://graph.facebook.com/"+config.Username+"/statuses" + "?limit=1000&access_token=" +config.AccessToken
   client := urlfetch.Client(c)
   response, err := client.Get(graph_url)
 

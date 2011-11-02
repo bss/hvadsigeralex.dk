@@ -1,5 +1,5 @@
 package config
 
 // This file must be renamed to "config.go" and a valid AccessToken must be added.
-// Permanent Facebook Accesstoken to the data
-const AccessToken = ""
+const Username = "" // Facebook username
+const AccessToken = "" // Permanent Facebook Accesstoken to the data
