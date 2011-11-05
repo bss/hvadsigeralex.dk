@@ -6,70 +6,83 @@ import (
     "rand"
     "strconv"
     "appengine"
+    "strings"
     "hvadsigeralex/model"
 )
 
 func init() {
-    http.HandleFunc("/", root)
+    http.HandleFunc("/", randomStatus)
+    http.HandleFunc("/status/", singleStatus)
     http.HandleFunc("/primeCache", primeCache)
 }
 
-func root(w http.ResponseWriter, r *http.Request) {
+func singleStatus(w http.ResponseWriter, r *http.Request) {
   c := appengine.NewContext(r)
-  
-  var status string = ""
-  statusList, statusErr := model.GetStatuses(c)
-  if statusErr != nil {
-    status = "..."
-  } else if len(statusList) > 0 {
-    status = statusList[rand.Intn(len(statusList)-1)].Message    
-  }
-  data := map[string] string {
-      "bodyClass": "col"+strconv.Itoa(rand.Intn(5)),
-      "status": status}
-  data["extraCSS"] = calcExtraCSS(data["status"])
-  
-  err := mainPageTemplate.Execute(w, data)
+	statusId, _ := strconv.Atoui64( strings.TrimLeft(r.URL.Path, "/status/") )
+	c.Debugf("Trying to fetch status %s from cache", statusId)
+	status, err := model.GetStatusById(c, statusId)
+	if err == nil {
+		renderStatus(w, status)
+	} else {
+		renderError(w, "Could not find status! <a href=\"/\">Reload me.<a>")
+	}
+
+}
+
+func randomStatus(w http.ResponseWriter, r *http.Request) {
+  c := appengine.NewContext(r)
+	statusList, statusErr := model.GetStatuses(c)
+	if statusErr == nil && len(statusList) > 0 {
+  	status := statusList[rand.Intn(len(statusList)-1)]
+		renderStatus(w, status)
+	} else {
+		renderError(w, "No statuses found, sorry.")
+	}
+}
+
+func renderStatus(w http.ResponseWriter, status model.Status) {
+	data := map[string] string {
+  	"bodyClass": "col"+strconv.Itoa(rand.Intn(4)),
+  	"status": status.Message,
+		"directLink": "<a href=\"/status/"+status.Id+"\">#"+status.Id+"</a>"}
+	data["extraCSS"] = calcExtraCSS(data["status"])
+	renderPage(w, data)
+}
+
+func renderError(w http.ResponseWriter, errMessage string) {
+	data := map[string] string {
+  	"bodyClass": "colError",
+  	"status": errMessage,
+		"directLink": ""}
+	data["extraCSS"] = calcExtraCSS(data["status"])
+	renderPage(w, data)
+}
+
+func renderPage(w http.ResponseWriter, data map[string] string) {
+	mainPageTemplate, templateErr := template.ParseFile("hvadsigeralex/templates/index.html")
+	if templateErr != nil {
+		http.Error(w, templateErr.String(), http.StatusInternalServerError)
+	}
+	err := mainPageTemplate.Execute(w, data)
   if err != nil {
-      http.Error(w, err.String(), http.StatusInternalServerError)
+		http.Error(w, err.String(), http.StatusInternalServerError)
   }
 }
 
 func calcExtraCSS(text string) (string){
   switch x := len(text); {
-    case x < 20: return "font-size: 1.9em";
-    case x < 40: return "font-size: 1.9em";
-    case x < 60: return "font-size: 1.6em";
+    case x < 20: return "font-size: 2.1em";
+    case x < 40: return "font-size: 2.0em";
+    case x < 60: return "font-size: 1.5em";
     case x < 80: return "font-size: 1.4em";
-    case x < 100: return "font-size: 1.4em";
-    case x < 140: return "font-size: 1.2em";
-    case x < 160: return "font-size: 1.1em";
+    case x < 100: return "font-size: 1.25em";
+    case x < 140: return "font-size: 1.1em";
+    case x < 160: return "font-size: 1.05em";
     case x < 180: return "font-size: 1.0em";
-    case x < 250: return "font-size: 0.9em";
+    case x < 250: return "font-size: 0.85em";
   }
   return "font-size: 0.8em;"
 }
-
-var mainPageTemplate = template.Must(template.New("MainPage").Parse(mainPageHTML))
-
-const mainPageHTML = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Hvad siger Alex?</title>
-  <link rel="stylesheet" href="/css/main.css" type="text/css" />
-  <meta property="og:image" content="http://www.hvadsigeralex.dk/img/head_col.png"/> 
-</head>
-<body class="{{html .bodyClass}}">
-  <div id="bubbleImg">&nbsp;
-    <h1 style="{{html .extraCSS}}">{{html .status}}</h1>
-    <a id="head" href="http://alexbp.dk">&nbsp;</a>
-  </div>
-  <div id="footer">Foto: <a href="http://www.gadang.dk">Frederik Holmgaard</a></div>
-</body>
-</html>
-`
 
 func primeCache(w http.ResponseWriter, r *http.Request) {
   c := appengine.NewContext(r)

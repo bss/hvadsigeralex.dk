@@ -18,13 +18,13 @@ body.col2 {
 	background: rgba(35, 96, 131, 255);
 }
 body.col3 {
-	background: rgba(121, 0, 0, 255);
-}
-body.col4 {
 	background: rgba(121, 0, 111, 255);
 }
-body.col5 {
+body.col4 {
 	background: rgba(121, 0, 57, 255);
+}
+body.colError {
+	background: rgba(121, 0, 0, 255);
 }
 a:hover {
 	text-shadow: 0px 0px 5px rgba(0,0,0, 100);
@@ -53,14 +53,49 @@ div#bubbleImg h1 {
 	
 	margin-top: 50px;
 	margin-left: 85px;
+	
+	overflow: hidden;
+}
 
+p#directLink {
+	display: block;
+	height: 15px;
+	width: 255px;
+	margin-left: 85px;
+	text-align: right;
+	font-size: 0.7em;
+}
+
+body p#directLink a,
+body p#directLink a:link {
+	color: rgba(120, 110, 110, 255);
+}
+body.col1 p#directLink a,
+body.col1p#directLink a:link {
+	color: rgba(0, 121, 52, 255);
+}
+body.col2 p#directLink a,
+body.col2 p#directLink a:link {
+	color: rgba(35, 96, 131, 255);
+}
+body.col3 p#directLink a,
+body.col3 p#directLink a:link {
+	color: rgba(121, 0, 111, 255);
+}
+body.col4 p#directLink a,
+body.col4 p#directLink a:link {
+	color: rgba(121, 0, 57, 255);
+}
+body.colError p#directLink a,
+body.colError p#directLink a:link {
+	color: rgba(121, 0, 0, 255);
 }
 
 a#head {
 	display: block;
 	height: 250px;
 	width: 210px;
-	margin-top: 60px;
+	margin-top: 45px;
 	margin-left: 160px;
 	text-decoration: none;
 	background: url('../img/head.png') no-repeat;

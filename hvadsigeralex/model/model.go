@@ -9,6 +9,7 @@ import (
     "appengine/urlfetch"
     "bytes"
     "gob"
+    "strconv"
     "hvadsigeralex/config"
 )
 
@@ -35,14 +36,45 @@ func GetStatuses(c appengine.Context) ([]Status, os.Error) {
   return statusList, nil
 }
 
+func GetStatusById(c appengine.Context, id uint64) (Status, os.Error) {
+	var status Status
+	var err os.Error
+	status, err = fetchStatusInMemcache(c, id)
+	if err != nil { // Cache miss
+		if _, fullFetchErr := fetchMemcache(c); fullFetchErr != nil { // We don't have the full list either => probably a dead cache
+			ForceUpdateStatuses(c);
+			status, err = fetchStatusInMemcache(c, id)
+		}
+	}
+	return status, err
+}
+
+
 func ForceUpdateStatuses(c appengine.Context) (os.Error) {
   statusList, err := fetchFacebookStatuses(c)
   updateMemcache(c, statusList)  
   return err
 }
 
+func fetchStatusInMemcache(c appengine.Context, id uint64) (Status, os.Error) {
+	key :="status"+strconv.Uitoa64(id)
+  item, memErr := memcache.Get(c, key)
+  if memErr != nil {
+    c.Errorf("Error fetching item (%s)from memcache, %s", key, memErr)
+    return Status{}, memErr
+  }
+  
+  var data []byte = item.Value
+  buffer := bytes.NewBuffer(data)
+  dec := gob.NewDecoder(buffer)
+      
+  var status Status
+  dec.Decode(&status)
+  
+  return status, nil	
+}
+
 func fetchMemcache(c appengine.Context) ([]Status, os.Error) {
-  // Get the item from the memcache
   item, memErr := memcache.Get(c, "statuses")
   if memErr != nil {
     c.Errorf("Error fetching item from memcache, %s", memErr)
@@ -74,6 +106,25 @@ func updateMemcache(c appengine.Context, statusList []Status) {
   if err := memcache.Set(c, item); err != nil {
       c.Errorf("Could not set item in memcache.")
   }
+	for _, v := range statusList {
+		updateMemcacheSingleStatus(c, v)
+	}
+}
+
+func updateMemcacheSingleStatus(c appengine.Context, status Status) {
+	c.Debugf("Updating cache, item: "+status.Id)
+  
+  var buffer bytes.Buffer
+  enc := gob.NewEncoder(&buffer)
+  enc.Encode(status)
+  var data []byte = buffer.Bytes()
+  item := &memcache.Item{
+      Key:   "status"+status.Id,
+      Value: data,
+  }
+  if err := memcache.Set(c, item); err != nil {
+      c.Errorf("Could not set item %s in memcache.", status.Id)
+  }
 }
 
 func fetchFacebookStatuses(c appengine.Context) ([]Status, os.Error) {
@@ -82,7 +133,7 @@ func fetchFacebookStatuses(c appengine.Context) ([]Status, os.Error) {
   response, err := client.Get(graph_url)
 
   if err != nil {
-    c.Errorf("Error fetching item from facebook, %s", err)
+    c.Errorf("Error fetching item from facebook, %s.\nResponse.", err.String())
     return nil, err
   }
 
