@@ -44,7 +44,7 @@ func renderStatus(w http.ResponseWriter, status model.Status) {
 	data := map[string] string {
   	"bodyClass": "col"+strconv.Itoa(rand.Intn(4)),
   	"status": status.Message,
-		"directLink": "<a href=\"/status/"+status.Id+"\">#"+status.Id+"</a>"}
+		"statusId": status.Id}
 	data["extraCSS"] = calcExtraCSS(data["status"])
 	renderPage(w, data)
 }
@@ -53,7 +53,7 @@ func renderError(w http.ResponseWriter, errMessage string) {
 	data := map[string] string {
   	"bodyClass": "colError",
   	"status": errMessage,
-		"directLink": ""}
+		"statusId": ""}
 	data["extraCSS"] = calcExtraCSS(data["status"])
 	renderPage(w, data)
 }

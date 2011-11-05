@@ -4,12 +4,16 @@
   <meta charset="utf-8">
   <title>Hvad siger Alex?</title>
   <link rel="stylesheet" href="/css/main.css" type="text/css" />
-  <meta property="og:image" content="http://www.hvadsigeralex.dk/img/head_col.png"/> 
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="http://www.hvadsigeralex.dk{{if .statusId}}/status/{{.statusId}}{{end}}"/>
+  <meta property="og:image" content="http://www.hvadsigeralex.dk/img/head_col.png"/>
+  <meta property="og:title" content="Hvad siger Alex?"/>
+  <meta property="og:description" content="{{ .status }}"/>
 </head>
 <body class="{{ .bodyClass }}">
   <div id="bubbleImg">&nbsp;
     <h1 style="{{ .extraCSS }}">{{ .status }}</h1>
-	<p id="directLink">{{ .directLink }}</p>
+	<p id="directLink">{{if .statusId}}<a href="/status/{{.statusId}}">#{{.statusId}}</a>{{end}}</p>
     <a id="head" href="http://alexbp.dk">&nbsp;</a>
   </div>
   <div id="footer">Foto: <a href="http://www.gadang.dk">Frederik Holmgaard</a></div>
