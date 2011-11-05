@@ -88,6 +88,6 @@ func primeCache(w http.ResponseWriter, r *http.Request) {
   c := appengine.NewContext(r)
   err := model.ForceUpdateStatuses(c)
   if err != nil {
-      http.Error(w, err.String(), http.StatusInternalServerError)
+      http.Error(w, "An error occured while updating the cache", http.StatusInternalServerError)
   }
 }
